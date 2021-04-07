@@ -5,10 +5,7 @@ channels:
   - pytorch
 dependencies:
   - pytorch-lightning=1.2.3
-  - pytorch=1.7.1=py3.7_cuda10.1.243_cudnn7.6.3_0
-  - torchvision=0.8.2=py37_cu101
-  - torchaudio=0.7.2=py37
-  - cudatoolkit=10.1
+  - pytorch=1.7.1
   - scipy=1.6.1
   - nano
   - pandas>=1.2
