@@ -1,9 +1,6 @@
 import torch
 import torch.nn as nn
 
-import numpy as np
-import pandas as pd
-
 import pytorch_lightning as pl
 from pytorch_lightning.core.decorators import auto_move_data
 
@@ -29,7 +26,14 @@ class BasicESD(pl.LightningModule):
                  **kwargs
                  ):
         super(BasicESD, self).__init__()
+
+        self.optimizer = optimizer
+        self.optimizer_kwargs = optimizer_kwargs
+        self.schedule = schedule
+        self.schedule_kwargs = schedule_kwargs
         self.loss_fn = loss_fn(**loss_fn_kwargs)
+
+        # networks
         self.lstm = nn.LSTM(input_size=n_features,
                             hidden_size=hidden_size,
                             num_layers=num_layers,
@@ -41,6 +45,7 @@ class BasicESD(pl.LightningModule):
         )
         self.netlist = [self.lstm, self.predictor]
 
+        # save hps
         self.save_hyperparameters()
 
     def configure_optimizers(self):
@@ -79,14 +84,11 @@ class BasicESD(pl.LightningModule):
         predictions = self(data)
         loss = self.loss_fn(predictions, targets)
         self.log('val_loss', loss, on_step=True, on_epoch=False, prog_bar=True, logger=True)
-        return result
+        return {'val_loss': loss}
 
     def test_step(self, batch, batch_idx):
-        x, y = batch
-        y_hat = self(x)
-        loss = self.criterion(y_hat, y)
-        result = pl.EvalResult()
-        result.log('test_loss', loss)
-        return result
-
-    def training_step(self, *args, **kwargs):
+        data, targets = batch
+        predictions = self(data)
+        loss = self.loss_fn(predictions, targets)
+        self.log('test_loss', loss, on_step=True, on_epoch=False, prog_bar=True, logger=True)
+        return {'test_loss': loss}
