@@ -1,25 +1,37 @@
-import os
-import glob
-import collections
-from _collections import OrderedDict
-import numbers, random
-from tqdm.auto import tqdm
+# Datasets and DatasetModules.
+
 import pandas as pd
 import numpy as np
-
-import pathlib
-import requests
-import h5py
-import anndata as ad
 
 import torch
 
 from torch._six import container_abcs, string_classes, int_classes
 from torch.utils.data import Dataset, DataLoader
-from torch.utils.data.sampler import Sampler
 from torchvision.datasets.folder import default_loader
 
-from collections import  defaultdict
 
-from pycox.models.data import pair_rank_mat
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
+class EnergyDemandDataset(Dataset):
+    """
+    Historical Energy Demand Data.
+
+    Dataset yields from underlying .csv file
+    """
+    def __init__(self, filepath, n_historical_timepoints):
+        self.filepath = filepath
+        self.n_historical_timepoints = n_historical_timepoints
+        data = pd.read_csv(filepath)
+        data['date_time'] = pd.to_datetime(data['date_time'])
+        self.data = data.set_index('date_time')
+        self.dates_map = self.data.index.date.unique()
+
+        # restrict dates_map to only inlcude dates w/ enough history
+        # TODO make sure that this is a valid exclusion
+        self.dates_map = self.dates_map[n_historical_timepoints:]
+
+    def __getitem__(self, idx):
+        date = self.dates_map[idx]
+        time_series = self.data.loc[date-self.n_historical_timepoints:date] # TODO implement this indexing here
+        return torch.Tensor(time_series)
+
+    def __len__(self):
+        return self.dates_map.shape[0]
