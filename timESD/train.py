@@ -1,42 +1,35 @@
-from argparse import ArgumentParser
-import torch
-from torch import nn
-import torch.nn.functional as F
-from torch.utils.data import DataLoader
+import hydra
+from omegaconf import DictConfig, OmegaConf
+
+from timESD.source.model import BasicESD
+from timESD.source.data import ESDDataModule
+
 import pytorch_lightning as pl
-from torch.utils.data import random_split
-
-from torchvision.datasets.mnist import MNIST
-from torchvision import transforms
+pl.seed_everything(23)
 
 
-
-def cli_main():
-    pl.seed_everything(23)
-
-    # ------------
-    # args
-    # ------------
-    parser = ArgumentParser()
-    parser.add_argument('--batch_size', default=32, type=int)
-    parser.add_argument('--hidden_dim', type=int, default=128)
-    parser = pl.Trainer.add_argparse_args(parser)
-    args = parser.parse_args()
-
+def train(FLAGS):
+    print(OmegaConf.to_yaml(FLAGS))
     # ------------
     # data
     # ------------
-    datasetmodule = ESDatasetModule('', train=True, download=True, transform=transforms.ToTensor())
+    datamodule = ESDDataModule(**FLAGS.experiment)
+    datamodule.prepare_data()
+    datamodule.setup("fit")
 
     # ------------
     # model
     # ------------
-    model = ESDModule()
+    model = BasicESD(**FLAGS.experiment)
 
     # ------------
     # training
     # ------------
-    trainer = pl.Trainer.from_argparse_args(args)
+    # TODO add callbacks
+    callbacks = ''
+
+    # TODO add logger!
+    trainer = pl.Trainer(**FLAGS.trainer, callbacks=callbacks)
     trainer.fit(model, datamodule)
 
     # ------------
@@ -44,6 +37,13 @@ def cli_main():
     # ------------
     result = trainer.test()
     print(result)
+
+
+@hydra.main(config_path='./source/config/', config_name="timesd")
+def main(FLAGS: DictConfig):
+    OmegaConf.set_struct(FLAGS, False)
+    FLAGS.setup.config_path = config_path
+    return train(FLAGS)
 
 
 if __name__ == '__main__':
