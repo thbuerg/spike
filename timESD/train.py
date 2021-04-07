@@ -26,7 +26,7 @@ def train(FLAGS):
     # training
     # ------------
     # TODO add callbacks
-    callbacks = ''
+    callbacks = None
 
     # TODO add logger!
     trainer = pl.Trainer(**FLAGS.trainer, callbacks=callbacks)
