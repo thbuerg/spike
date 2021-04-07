@@ -15,8 +15,8 @@ experiment:
   n_targets: 96
   n_features: 3
   hidden_size: 128
-  num_layers: 3
-  dropout: 0.5
-  learning_rate: 0.01
+  num_layers: 2
+  dropout: 0.2
+  learning_rate: 0.001
   batch_size: 128
   num_workers : 8

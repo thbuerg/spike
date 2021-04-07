@@ -1,16 +1,13 @@
 # Datasets and DatasetModules.
 
 import pandas as pd
-import numpy as np
 
 import torch
 
 from copy import deepcopy
 
 import pytorch_lightning as pl
-from torch._six import container_abcs, string_classes, int_classes
 from torch.utils.data import Dataset, DataLoader
-from torchvision.datasets.folder import default_loader
 
 
 class EnergyDemandDataset(Dataset):

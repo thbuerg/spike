@@ -9,6 +9,7 @@ from timESD.source.utils import set_up_neptune, get_neptune_params, get_default_
 import torch
 import pytorch_lightning as pl
 pl.seed_everything(23)
+print('hi')
 
 
 def train(FLAGS):
@@ -24,6 +25,21 @@ def train(FLAGS):
     # model
     # ------------
     model = BasicESD(**FLAGS.experiment, loss_fn=torch.nn.BCELoss)
+
+    # ------------
+    # LR FINDER:
+    # ------------
+    model = BasicESD(**FLAGS.experiment, loss_fn=torch.nn.BCELoss)
+    trainer = pl.Trainer(**FLAGS.trainer)
+    lr = trainer.tuner.lr_find(model, datamodule, num_training=500).suggestion()
+    if lr > 0.1:
+        lr = FLAGS.optimizer_kwargs["lr"]
+        print(f"LR to high -> Corrected to {lr}")
+    if lr < 0.00001:
+        lr = FLAGS.optimizer_kwargs["lr"]
+        print(f"LR to low -> Corrected to {lr}")
+    print(f"Best Learning Rate: {lr}")
+    FLAGS.optimizer_kwargs["lr"] = lr
 
     # ------------
     # training

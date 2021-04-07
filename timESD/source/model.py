@@ -76,7 +76,7 @@ class BasicESD(pl.LightningModule):
         data, targets = batch
         predictions = self(data)
         loss = self.loss_fn(predictions, targets)
-        self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        self.log('train_loss', int(loss), on_step=True, on_epoch=True, prog_bar=True, logger=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -90,8 +90,16 @@ class BasicESD(pl.LightningModule):
                 'val_acc@5': acc5,
                 'val_loss': loss}
         for k, v in logs.items():
-            self.log(k, v, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+            self.log(k, v, on_step=False, on_epoch=False, logger=False, prog_bar=False)
         return logs
+
+    def validation_epoch_end(self, outputs):
+        losses = {}
+        # aggregate the per-batch-metrics:
+        for l in ["val_loss", 'val_acc@1', 'val_acc@5']:
+            losses[l] = torch.stack([output[l] for output in outputs]).mean()
+        for key, value in losses.items():
+            self.log(key, value, on_step=False, on_epoch=True, prog_bar=False, logger=True)
 
     def test_step(self, batch, batch_idx):
         data, targets = batch
