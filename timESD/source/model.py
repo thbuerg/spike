@@ -69,26 +69,60 @@ class BasicESD(pl.LightningModule):
     def forward(self, inputs):
         # lstm_out = (batch_size, seq_len, hidden_size)
         lstm_out, _ = self.lstm(inputs)
-        y_pred = self.predictor(lstm_out[:,-1])
-        return y_pred
+        predictions = self.predictor(lstm_out[:,-1])
+        return predictions
 
     def training_step(self, batch, batch_idx):
         data, targets = batch
         predictions = self(data)
         loss = self.loss_fn(predictions, targets)
-        self.log('train_loss', loss, on_step=True, on_epoch=False, prog_bar=True, logger=True)
-        return {'train_loss': loss}
+        self.log('train_loss', loss, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        return loss
 
     def validation_step(self, batch, batch_idx):
         data, targets = batch
         predictions = self(data)
         loss = self.loss_fn(predictions, targets)
-        self.log('val_loss', loss, on_step=True, on_epoch=False, prog_bar=True, logger=True)
-        return {'val_loss': loss}
+        acc1, acc5 = self.accuracy(predictions, targets)
+
+        # gather results and log
+        logs = {'val_acc@1': acc1,
+                'val_acc@5': acc5,
+                'val_loss': loss}
+        for k, v in logs.items():
+            self.log(k, v, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        return logs
 
     def test_step(self, batch, batch_idx):
         data, targets = batch
         predictions = self(data)
         loss = self.loss_fn(predictions, targets)
-        self.log('test_loss', loss, on_step=True, on_epoch=False, prog_bar=True, logger=True)
-        return {'test_loss': loss}
+        acc1, acc5 = self.accuracy(predictions, targets)
+
+        # gather results and log
+        logs = {'test_acc@1': acc1,
+                'test_acc@5': acc5,
+                'test_loss': loss}
+        for k, v in logs.items():
+            self.log(k, v, on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        return {'test_loss': int(loss)}
+
+    @torch.no_grad()
+    def accuracy(self, predictions, targets, k=(1, 5)):
+        """
+        calculates topk accuracy. Implementation from:
+        https://github.com/DonkeyShot21/essential-BYOL/blob/main/byol/model.py
+        :param predictions:
+        :param targets:
+        :param k:
+        :return:
+        """
+        predictions = predictions.topk(max(k), 1, True, True)[1].t() # indices of top k
+        # correct = predictions.eq(targets.view(1, -1).expand_as(predictions))
+        correct = predictions.eq(torch.argmax(targets, dim=-1).view(1, -1).expand_as(predictions))
+
+        res = []
+        for k_i in k:
+            correct_k = correct[:k_i].reshape(-1).float().sum(0, keepdim=True)
+            res.append(correct_k.mul_(100.0 / targets.size(0)))
+        return res

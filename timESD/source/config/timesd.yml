@@ -1,19 +1,19 @@
 setup:
-  project_name: template/LSTM
-  experiment_name: LSTM
+  project_name: thbuerg/timESD
+  experiment_name: debug
   tags: LSTM
 trainer:
-  default_root_dir: ./
-  gpus: -1
-  precision: 16
+  default_root_dir: /Users/buergelt/Projects/timESD/results/
+  accumulate_grad_batches: 1
   stochastic_weight_avg: False
   val_check_interval: 1.0
   overfit_batches: 0.0
   fast_dev_run: False
 experiment:
-  filepath: /data/
-  seq_len: 96
-  n_features: 4
+  filepath: /Users/buergelt/Projects/timESD/data/data.csv
+  seq_len: 672
+  n_targets: 96
+  n_features: 3
   hidden_size: 128
   num_layers: 3
   dropout: 0.5
