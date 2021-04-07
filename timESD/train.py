@@ -42,9 +42,8 @@ def train(FLAGS):
 @hydra.main(config_path='./source/config/', config_name="timesd")
 def main(FLAGS: DictConfig):
     OmegaConf.set_struct(FLAGS, False)
-    FLAGS.setup.config_path = config_path
     return train(FLAGS)
 
 
 if __name__ == '__main__':
-    cli_main()
+    main()
