@@ -10,10 +10,10 @@ trainer:
   overfit_batches: 0.0
   fast_dev_run: False
 experiment:
-  filepath: /Users/buergelt/Projects/timESD/data/data.csv
+  filepath: /Users/buergelt/Projects/timESD/data/data_normed.csv
   seq_len: 672
   n_targets: 96
-  n_features: 3
+  n_features: 4
   hidden_size: 128
   num_layers: 2
   dropout: 0.2

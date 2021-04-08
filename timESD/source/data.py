@@ -23,7 +23,7 @@ class EnergyDemandDataset(Dataset):
         data['date_time'] = pd.to_datetime(data['date_time'])
         self.data = data.set_index('date_time')[['TT_10', 'GS_10', 'FF_10']]
         self.data.head()
-        self.labels = data.set_index('date_time')[['Wert']]
+        self.labels = data.set_index('date_time')[['daily_max']]
         self.dates_map = pd.unique(self.data.index.date)
 
         # restrict dates_map to only inlcude dates w/ enough history
