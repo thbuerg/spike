@@ -26,8 +26,8 @@ cd timESD/timESD/
 
 # run module 
 python train.py \
-  experiment.file_path=/home/buergelt/projects/timESD/data/data_normed.csv \
-  trainer.default_root_dir=/home/buergelt/projects/timESD/results/ \
+  experiment.file_path=/path/to/your/data/data_normed.csv \
+  trainer.default_root_dir=/path/to/your/results/ \
   +trainer.num_sanity_val_steps=1 +trainer.max_epochs=100 trainer.gpus=[0] experiment.batch_size=128 experiment.learning_rate=0.001
 ```
 

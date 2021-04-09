@@ -3,7 +3,6 @@ setup:
   experiment_name: debug
   tags: LSTM
 trainer:
-  default_root_dir: /home/buergelt/projects/timESD/results/
   accumulate_grad_batches: 1
   stochastic_weight_avg: False
   val_check_interval: 1.0
@@ -13,7 +12,6 @@ trainer:
   max_epochs: 2000
 experiment:
   max_epochs: 2000
-  filepath: /home/buergelt/projects/timESD/data/data_normed.csv
   seq_len: 672
   n_targets: 52
   n_features: 4
