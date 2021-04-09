@@ -6,6 +6,8 @@ import requests, zipfile, io
 
 
 def main(path):
+    # https://www.thueringer-energienetze.com/Content/Documents/Ueber_uns/p_17_2-1_MS_2020.zip
+    # https://www.thueringer-energienetze.com/Content/Documents/Ueber_uns/p_17_2-1_HSU_2020.zip
     load_url = 'https://www.thueringer-energienetze.com/Content/Documents/Ueber_uns/p_17_2-1_HS_2020.zip'
     r = requests.get(load_url)
     z = zipfile.ZipFile(io.BytesIO(r.content))
