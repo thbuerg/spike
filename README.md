@@ -33,7 +33,7 @@ python train.py \
 
 ## Citation   
 ```
-@article{Time Series Forecasting for Energy Storage Demand,
+@article{Time Series Forecasting for Energy Storage Deployment,
   title={timESD},
   author={Thore Buergel},
   journal={github},
