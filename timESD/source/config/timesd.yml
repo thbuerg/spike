@@ -3,16 +3,17 @@ setup:
   experiment_name: debug
   tags: LSTM
 trainer:
-  default_root_dir: /Users/buergelt/Projects/timESD/results/
+  default_root_dir: /home/buergelt/projects/timESD/results/
   accumulate_grad_batches: 1
   stochastic_weight_avg: False
   val_check_interval: 1.0
   overfit_batches: 0.0
   fast_dev_run: False
+  gpus: 3
 experiment:
-  filepath: /Users/buergelt/Projects/timESD/data/data_normed.csv
+  filepath: /home/buergelt/projects/timESD/data/data_normed.csv
   seq_len: 672
-  n_targets: 96
+  n_targets: 52
   n_features: 4
   hidden_size: 128
   num_layers: 2

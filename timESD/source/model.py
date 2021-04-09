@@ -39,11 +39,21 @@ class BasicESD(pl.LightningModule):
                             num_layers=num_layers,
                             dropout=dropout,
                             batch_first=True)
-        self.predictor = nn.Sequential(
-            nn.Linear(hidden_size, n_targets),
+        self.date_net = nn.Sequential(
+            nn.Linear(96*3, 128),
+            nn.Dropout(0.2),
+            nn.ReLU(True),
+            nn.Linear(128, 128),
+            nn.Dropout(0.2),
+            nn.ReLU(True),
+            nn.Linear(128, 64),
             nn.Softmax()
         )
-        self.netlist = [self.lstm, self.predictor]
+        self.predictor = nn.Sequential(
+            nn.Linear(hidden_size+64, n_targets),
+            nn.Softmax()
+        )
+        self.netlist = [self.lstm, self.date_net, self.predictor]
 
         # save hps
         self.save_hyperparameters()
@@ -67,16 +77,23 @@ class BasicESD(pl.LightningModule):
 
     @auto_move_data
     def forward(self, inputs):
+        ts_data, date_data = inputs
         # lstm_out = (batch_size, seq_len, hidden_size)
-        lstm_out, _ = self.lstm(inputs)
-        predictions = self.predictor(lstm_out[:,-1])
+        lstm_out, _ = self.lstm(ts_data)
+        date_fts = self.date_net(date_data)
+        predictions = self.predictor(torch.cat([lstm_out[:,-1], date_fts], dim=-1))
         return predictions
 
     def training_step(self, batch, batch_idx):
         data, targets = batch
         predictions = self(data)
         loss = self.loss_fn(predictions, targets)
-        self.log('train_loss', int(loss), on_step=True, on_epoch=True, prog_bar=True, logger=True)
+        acc1, acc5 = self.accuracy(predictions, targets)
+        logs = {'train_acc@1': acc1,
+                'train_acc@5': acc5,
+                'train_loss': loss}
+        for k, v in logs.items():
+            self.log(k, v, on_step=True, on_epoch=True, logger=True, prog_bar=True)
         return loss
 
     def validation_step(self, batch, batch_idx):
@@ -113,7 +130,7 @@ class BasicESD(pl.LightningModule):
                 'test_loss': loss}
         for k, v in logs.items():
             self.log(k, v, on_step=True, on_epoch=True, prog_bar=True, logger=True)
-        return {'test_loss': int(loss)}
+        return {'test_loss': loss}
 
     @torch.no_grad()
     def accuracy(self, predictions, targets, k=(1, 5)):
@@ -126,7 +143,6 @@ class BasicESD(pl.LightningModule):
         :return:
         """
         predictions = predictions.topk(max(k), 1, True, True)[1].t() # indices of top k
-        # correct = predictions.eq(targets.view(1, -1).expand_as(predictions))
         correct = predictions.eq(torch.argmax(targets, dim=-1).view(1, -1).expand_as(predictions))
 
         res = []

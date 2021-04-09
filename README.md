@@ -1,9 +1,13 @@
-<div align="center">    
+<div align="center">
  
 # Time Series Forecasting for Energy Storage Deployment (TimeESD)
+</div>
 
 ## Description   
-Deep Learning model to predict spikes in energy demand based on historical time series data and environmental data.
+Deep Learning model to predict spikes in energy demand based on historical environmental and power consumption data. 
+Hyperparameters are controlled via [hydra](https://hydra.cc/) and Logging is done with [neptune](https://www.neptune.ai).
+
+Model currently implemented is a LSTM taking the last 7 days of environmental (Temperature, Windspeeds, ??) and power consumption data in 15-minute resolution.
 
 ## How to run   
 First, install dependencies (before you do that, install Miniconda.)
@@ -15,21 +19,24 @@ git clone https://github.com/thbuerg/timeESD
 cd timESD
 conda env create -f environment.yml
 ```   
- Next, navigate to any file and run it.   
+ Next, navigate to train.py and execute it.   
  ```bash
 # module folder
-cd timESD
+cd timESD/timESD/
 
 # run module 
-python train.py    
+python train.py \
+  experiment.file_path=/home/buergelt/projects/timESD/data/data_normed.csv \
+  trainer.default_root_dir=/home/buergelt/projects/timESD/results/ \
+  +trainer.num_sanity_val_steps=1 +trainer.max_epochs=100 trainer.gpus=[0] experiment.batch_size=128 experiment.learning_rate=0.001
 ```
 
 ## Citation   
 ```
-@article{YourName,
-  title={Your Title},
-  author={Your team},
-  journal={Location},
-  year={Year}
+@article{Time Series Forecasting for Energy Storage Demand,
+  title={timESD},
+  author={Thore Buergel},
+  journal={github},
+  year={2021}
 }
 ```   

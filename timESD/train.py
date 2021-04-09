@@ -15,20 +15,11 @@ print('hi')
 def train(FLAGS):
     print(OmegaConf.to_yaml(FLAGS))
     # ------------
-    # data
+    # LR FINDER:
     # ------------
     datamodule = ESDDataModule(**FLAGS.experiment)
     datamodule.prepare_data()
     datamodule.setup("fit")
-
-    # ------------
-    # model
-    # ------------
-    model = BasicESD(**FLAGS.experiment, loss_fn=torch.nn.BCELoss)
-
-    # ------------
-    # LR FINDER:
-    # ------------
     model = BasicESD(**FLAGS.experiment, loss_fn=torch.nn.BCELoss)
     trainer = pl.Trainer(**FLAGS.trainer)
     lr = trainer.tuner.lr_find(model, datamodule, num_training=500).suggestion()
@@ -40,6 +31,19 @@ def train(FLAGS):
         print(f"LR to low -> Corrected to {lr}")
     print(f"Best Learning Rate: {lr}")
     FLAGS.optimizer_kwargs["lr"] = lr
+
+    # ------------
+    # data
+    # ------------
+    datamodule = ESDDataModule(**FLAGS.experiment)
+    datamodule.prepare_data()
+    datamodule.setup("fit")
+
+
+    # ------------
+    # model
+    # ------------
+    model = BasicESD(**FLAGS.experiment, loss_fn=torch.nn.BCELoss)
 
     # ------------
     # training

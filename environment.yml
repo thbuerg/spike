@@ -24,6 +24,5 @@ dependencies:
       - omegaconf>=2.0.6
       - torchmetrics
       - scikit-metrics
-      - pretrainedmodels
       - pytorch-lightning-bolts
       - nvidia-htop

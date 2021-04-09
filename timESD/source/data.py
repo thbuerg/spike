@@ -1,6 +1,7 @@
 # Datasets and DatasetModules.
 
 import pandas as pd
+import numpy as np
 
 import torch
 
@@ -21,7 +22,7 @@ class EnergyDemandDataset(Dataset):
         self.n_historical_dates = n_historical_dates
         data = pd.read_csv(filepath)
         data['date_time'] = pd.to_datetime(data['date_time'])
-        self.data = data.set_index('date_time')[['TT_10', 'GS_10', 'FF_10']]
+        self.data = data.set_index('date_time')[['Wert', 'TT_10', 'GS_10', 'FF_10']]
         self.data.head()
         self.labels = data.set_index('date_time')[['daily_max']]
         self.dates_map = pd.unique(self.data.index.date)
@@ -33,8 +34,13 @@ class EnergyDemandDataset(Dataset):
         date = self.dates_map[idx]
         start_date = (date - pd.tseries.offsets.DateOffset(days=self.n_historical_dates)).date()
         time_series = self.data.loc[start_date:date].values
+
+        date_features = self.data.loc[str(date), ['TT_10', 'GS_10', 'FF_10']].values.ravel()
+
         label = self.labels.loc[str(self.dates_map[idx])].values.ravel()
-        return torch.Tensor(time_series), torch.Tensor(label)
+        # restrict to 7am - 8pm:
+        label = label[28:-16]
+        return (torch.Tensor(time_series), torch.Tensor(date_features)), torch.Tensor(label)
 
     def __len__(self):
         return self.dates_map.shape[0]
@@ -56,17 +62,20 @@ class ESDDataModule(pl.LightningDataModule):
         dataset = EnergyDemandDataset(filepath=self.filepath, n_historical_dates=self.seq_len//96)
         val_size = int(0.20 * len(dataset))
         test_size = int(0.5 * val_size)
+        # all dates:
+        all_dates = deepcopy(dataset.dates_map)
+        np.random.shuffle(all_dates)
 
         # TODO: make this random!
         # split dates:
         test_ds = deepcopy(dataset)
-        test_ds.dates_map = test_ds.dates_map[:test_size]
+        test_ds.dates_map = all_dates[:test_size]
 
         valid_ds = deepcopy(dataset)
-        valid_ds.dates_map = valid_ds.dates_map[test_size:val_size]
+        valid_ds.dates_map = all_dates[test_size:val_size]
 
         train_ds = dataset
-        train_ds.dates_map = train_ds.dates_map[val_size:]
+        train_ds.dates_map = all_dates[val_size:]
 
         return train_ds, valid_ds, test_ds
 
