@@ -25,12 +25,12 @@ conda env create -f environment.yml
 cd timESD/timESD/
 
 # run preprocessing
-python preprocessing.py experiment.file_path=/path/to/your/data/
+python preprocessing.py +experiment.file_path=/path/to/your/data/
 
 # run module 
 python train.py \
-  experiment.file_path=/path/to/your/data/data_normed.csv \
-  trainer.default_root_dir=/path/to/your/results/ \
+  +experiment.file_path=/path/to/your/data/data_normed.csv \
+  +trainer.default_root_dir=/path/to/your/results/ \
   +trainer.num_sanity_val_steps=1 +trainer.max_epochs=100 trainer.gpus=[0] experiment.batch_size=128 experiment.learning_rate=0.001
 ```
 
