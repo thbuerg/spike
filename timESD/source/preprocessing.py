@@ -2,19 +2,19 @@
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
+import requests, zipfile, io
 
 
 def main(path):
-    df1 = pd.read_csv(f"{path}/data/17-2-1 HS 2020-Q1.csv", sep=';', decimal=',', header=7)
-    df1.dropna(how='all', inplace=True)
-    df2 = pd.read_csv(f"{path}/data/17-2-1 HS 2020-Q2.csv", sep=';', decimal=',', header=7)
-    df2.dropna(how='all', inplace=True)
-    df3 = pd.read_csv(f"{path}/data/17-2-1 HS 2020-Q3.csv", sep=';', decimal=',', header=7)
-    df3.dropna(how='all', inplace=True)
-    df4 = pd.read_csv(f"{path}/data/17-2-1 HS 2020-Q4.csv", sep=';', decimal=',', header=7)
-    df4.dropna(how='all', inplace=True)
-    df = pd.concat([df1, df2, df3, df4])
-
+    load_url = 'https://www.thueringer-energienetze.com/Content/Documents/Ueber_uns/p_17_2-1_HS_2020.zip'
+    r = requests.get(load_url)
+    z = zipfile.ZipFile(io.BytesIO(r.content))
+    df_list = []
+    for f in z.namelist():
+        df_tmp = pd.read_csv(z.open(f), sep=';', decimal=',', header=7, encoding='latin1')
+        df_tmp.dropna(how='all', inplace=True)
+        df_list.append(df_tmp)
+    df = pd.concat(df_list)
     df['datetime'] = pd.to_datetime(df['Datum'] + ' ' + df['von'])
     df.set_index('datetime', inplace=True)
     df.drop(['Datum', 'von', 'bis'], axis=1, inplace=True)
@@ -22,21 +22,30 @@ def main(path):
     df.set_index(newindex, inplace=True)
 
     # import weather data
-    temp = pd.read_csv(f"{path}/data/produkt_zehn_min_tu_20191005_20210406_01270.txt", sep=';')
+    temp_url = 'https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/10_minutes/air_temperature/recent/10minutenwerte_TU_01270_akt.zip'
+    r = requests.get(temp_url)
+    z = zipfile.ZipFile(io.BytesIO(r.content))
+    temp = pd.read_csv(z.open(z.namelist()[0]), sep=';')
     temp['datetime']=pd.to_datetime(temp.MESS_DATUM, format='%Y%m%d%H%M')
     temp.set_index('datetime', inplace=True)
     temp.drop(['STATIONS_ID', 'MESS_DATUM', '  QN', 'PP_10', 'TM5_10', 'RF_10', 'TD_10', 'eor'], axis=1, inplace=True)
     temp = temp.resample("15T").mean()
     temp = temp.loc['2020',:]
 
-    wind = pd.read_csv(f"{path}/data/produkt_zehn_min_ff_20191005_20210406_01270.txt", sep=';')
+    wind_url = 'https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/10_minutes/wind/recent/10minutenwerte_wind_01270_akt.zip'
+    r = requests.get(wind_url)
+    z = zipfile.ZipFile(io.BytesIO(r.content))
+    wind = pd.read_csv(z.open(z.namelist()[0]), sep=';')
     wind['datetime']=pd.to_datetime(wind.MESS_DATUM, format='%Y%m%d%H%M')
     wind.set_index('datetime', inplace=True)
     wind.drop(['STATIONS_ID', 'MESS_DATUM', '  QN', 'DD_10', 'eor'], axis=1, inplace=True)
     wind = wind.resample("15T").mean()
     wind = wind.loc['2020',:]
 
-    sun = pd.read_csv(f"{path}/data/produkt_zehn_min_sd_20191005_20210406_01270.txt", sep=';')
+    sun_url = 'https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/10_minutes/solar/recent/10minutenwerte_SOLAR_01270_akt.zip'
+    r = requests.get(sun_url)
+    z = zipfile.ZipFile(io.BytesIO(r.content))
+    sun = pd.read_csv(z.open(z.namelist()[0]), sep=';')
     sun['datetime']=pd.to_datetime(sun.MESS_DATUM, format='%Y%m%d%H%M')
     sun.set_index('datetime', inplace=True)
     sun.drop(['STATIONS_ID', 'MESS_DATUM', '  QN', 'DS_10', 'SD_10', 'LS_10', 'eor'], axis=1, inplace=True)
@@ -67,7 +76,7 @@ def main(path):
 
 
 if __name__ == '__main__':
-    path = '/Users/buergelt/Projects/timESD/'
+    path = '/Users/amadeus/Documents/git_repositories/timESD'
     main(path)
 
 
