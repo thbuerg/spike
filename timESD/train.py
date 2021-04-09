@@ -5,7 +5,6 @@ from timESD.source.model import BasicESD
 from timESD.source.data import ESDDataModule
 from timESD.source.utils import set_up_neptune, get_neptune_params, get_default_callbacks
 
-
 import torch
 import pytorch_lightning as pl
 pl.seed_everything(23)

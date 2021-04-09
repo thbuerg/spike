@@ -1,11 +1,20 @@
 # Preprocessing.
+import os
+
 import pandas as pd
 import numpy as np
 from sklearn.preprocessing import StandardScaler
 import requests, zipfile, io
 
+import hydra
+from omegaconf import DictConfig, OmegaConf
 
-def main(path):
+
+@hydra.main(config_path='./config/', config_name="timesd.yml")
+def main(FLAGS: DictConfig):
+    OmegaConf.set_struct(FLAGS, False)
+    os.makedirs(FLAGS.experiment.file_path, exist_ok=True)
+
     # https://www.thueringer-energienetze.com/Content/Documents/Ueber_uns/p_17_2-1_MS_2020.zip
     # https://www.thueringer-energienetze.com/Content/Documents/Ueber_uns/p_17_2-1_HSU_2020.zip
     load_url = 'https://www.thueringer-energienetze.com/Content/Documents/Ueber_uns/p_17_2-1_HS_2020.zip'
@@ -69,17 +78,18 @@ def main(path):
     dailymax = data.groupby(pd.Grouper(freq='D'))['Wert'].idxmax()
     data['daily_max'] = 0
     data.loc[dailymax, 'daily_max'] = 1
-    data.to_csv(f'{path}/data/data.csv')
+
+
+    data.to_csv(os.path.join(FLAGS.experiment.file_path, 'data.csv'))
 
     normed_data['daily_max'] = data['daily_max']
-    normed_data.to_csv(f'{path}/data/data_normed.csv')
+    normed_data.to_csv(os.path.join(FLAGS.experiment.file_path, 'data_normed.csv'))
 
     print(normed_data.head())
 
 
 if __name__ == '__main__':
-    path = '/Users/amadeus/Documents/git_repositories/timESD'
-    main(path)
+    main()
 
 
 

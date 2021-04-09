@@ -24,6 +24,9 @@ conda env create -f environment.yml
 # module folder
 cd timESD/timESD/
 
+# run preprocessing
+python preprocessing.py experiment.file_path=/path/to/your/data/
+
 # run module 
 python train.py \
   experiment.file_path=/path/to/your/data/data_normed.csv \
