@@ -10,7 +10,9 @@ trainer:
   overfit_batches: 0.0
   fast_dev_run: False
   gpus: 3
+  max_epochs: 2000
 experiment:
+  max_epochs: 2000
   filepath: /home/buergelt/projects/timESD/data/data_normed.csv
   seq_len: 672
   n_targets: 52

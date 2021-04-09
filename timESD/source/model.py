@@ -41,13 +41,15 @@ class BasicESD(pl.LightningModule):
                             batch_first=True)
         self.date_net = nn.Sequential(
             nn.Linear(96*3, 128),
-            nn.Dropout(0.2),
+            nn.BatchNorm1d(128),
+            nn.Dropout(0.5),
             nn.ReLU(True),
             nn.Linear(128, 128),
-            nn.Dropout(0.2),
+            nn.BatchNorm1d(128),
+            nn.Dropout(0.5),
             nn.ReLU(True),
             nn.Linear(128, 64),
-            nn.Softmax()
+            nn.ReLU(True),
         )
         self.predictor = nn.Sequential(
             nn.Linear(hidden_size+64, n_targets),

@@ -9,7 +9,6 @@ echo $CUDA_VISIBLE_DEVICES
 
 python train.py \
  +trainer.num_sanity_val_steps=1 \
- +trainer.max_epochs=100 \
  trainer.gpus=-1 \
  experiment.batch_size=128 \
  experiment.learning_rate=0.001
