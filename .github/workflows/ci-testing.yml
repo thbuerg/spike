@@ -55,6 +55,7 @@ jobs:
         conda update -q conda
         conda info -a
         conda env create -f environment.yml
+        . $CONDA_ROOT/etc/profile.d/conda.sh
         conda activate spike_env
         pip install .
         pip install --requirement tests/requirements.txt
@@ -65,6 +66,7 @@ jobs:
     - name: Tests
       shell: bash -l {0}
       run: |
+        . $CONDA_ROOT/etc/profile.d/conda.sh
         which conda
         conda activate spike_env
         coverage run --source spike -m py.test spike tests -v --junitxml=junit/test-results-${{ runner.os }}-${{ matrix.python-version }}.xml
