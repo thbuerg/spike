@@ -64,7 +64,9 @@ jobs:
 
     - name: Tests
       run: |
+        conda activate spike_env
         coverage run --source spike -m py.test spike tests -v --junitxml=junit/test-results-${{ runner.os }}-${{ matrix.python-version }}.xml
+      shell: bash
 
     - name: Statistics
       if: success()
