@@ -10,11 +10,8 @@ import hydra
 from omegaconf import DictConfig, OmegaConf
 
 
-@hydra.main(config_path='./config/', config_name="spike.yml")
-def main(FLAGS: DictConfig):
-    OmegaConf.set_struct(FLAGS, False)
+def preprocessing(FLAGS):
     os.makedirs(FLAGS.experiment.file_path, exist_ok=True)
-
     # https://www.thueringer-energienetze.com/Content/Documents/Ueber_uns/p_17_2-1_MS_2020.zip
     # https://www.thueringer-energienetze.com/Content/Documents/Ueber_uns/p_17_2-1_HSU_2020.zip
     load_url = 'https://www.thueringer-energienetze.com/Content/Documents/Ueber_uns/p_17_2-1_HS_2020.zip'
@@ -86,6 +83,12 @@ def main(FLAGS: DictConfig):
     normed_data.to_csv(os.path.join(FLAGS.experiment.file_path, 'data_normed.csv'))
 
     print(normed_data.head())
+
+
+@hydra.main(config_path='./config/', config_name="spike.yml")
+def main(FLAGS: DictConfig):
+    OmegaConf.set_struct(FLAGS, False)
+    preprocessing(FLAGS)
 
 
 if __name__ == '__main__':
