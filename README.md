@@ -1,6 +1,6 @@
 <div align="center">
  
-# Time Series Forecasting for Energy Storage Deployment (TimESD)
+# Time Series Forecasting for Energy Demand Spike Prediction (SPIKE)
 </div>
 
 ## Description   
@@ -18,21 +18,21 @@ Currently data is limited to 1y of data.
 ## How to run   
 First, install dependencies (before you do that, install Miniconda.)
 ```bash
-# clone timESD   
-git clone https://github.com/thbuerg/timeESD
+# clone spike   
+git clone https://github.com/thbuerg/spike
 
 # install dependencies
-cd timESD
+cd spike
 conda env create -f environment.yml
 
-# install timESD
+# install spike
 pip install -e .
 
 ```   
  Next, navigate to train.py and execute it.   
  ```bash
 # module folder
-cd timESD/timESD/
+cd spike/spike/
 
 # run preprocessing
 python preprocessing.py +experiment.filepath=/path/to/your/data/
@@ -46,8 +46,8 @@ python train.py \
 
 ## Citation   
 ```
-@article{Time Series Forecasting for Energy Storage Deployment,
-  title={timESD},
+@article{Time Series Forecasting for Energy Demand Spike Prediction (SPIKE),
+  title={SPIKE},
   author={Thore Buergel},
   journal={github},
   year={2021}

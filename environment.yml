@@ -1,4 +1,4 @@
-name: timESD
+name: spike
 channels:
   - defaults
   - conda-forge

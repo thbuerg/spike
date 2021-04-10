@@ -1,6 +1,6 @@
 data/
 results/
-timESD/run.sh
+spike/run.sh
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -110,11 +110,11 @@ ENV/
 env.bak/
 venv.bak/
 
-# Spyder timESD settings
+# Spyder spike settings
 .spyderproject
 .spyproject
 
-# Rope timESD settings
+# Rope spike settings
 .ropeproject
 
 # mkdocs documentation
@@ -127,7 +127,7 @@ venv.bak/
 .idea
 .vscode
 
-# seed timESD
+# seed spike
 lightning_logs/
 MNIST
 .DS_Store
