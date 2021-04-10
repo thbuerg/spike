@@ -10,7 +10,7 @@ Deep Learning model to predict spikes in energy demand based on historical envir
 Hyperparameters are controlled via [hydra](https://hydra.cc/) and Logging is done with [neptune](https://www.neptune.ai).
 
 Model currently implemented is a LSTM taking the last 7 days of environmental (Temperature, Windspeeds, Solargobalradiation) and power consumption data in 15-minute resolution. 
-The model predicts the expected daily maximum in electrical load in a 15 minute interval between 7AM and 8PM.
+The model predicts the expected time of the daily maximum in electrical load in a 15 minute interval between 7AM and 8PM.
 
 Energy data is retrieved from German Energy Providers, in this case the [Thueringer Energienetze](https://www.thueringer-energienetze.com).
 Weather data is retrieved from the German Weather Forecasting Service [Deutscher Wetterdienst](https://opendata.dwd.de/climate_environment/CDC/observations_germany/climate/).
