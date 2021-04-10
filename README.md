@@ -1,6 +1,8 @@
 <div align="center">
  
 # Time Series Forecasting for Energy Demand Spike Prediction (SPIKE)
+
+:battery::battery::electric_plug:
 </div>
 
 ## Description   
