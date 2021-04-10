@@ -55,8 +55,8 @@ jobs:
         conda info -a
         conda env create -f environment.yml
         conda activate spike_env
-        python -m pip install .
-        pip install --requirement tests/requirements.txt --quiet --use-feature=2020-resolver
+        pip install .
+        pip install --requirement tests/requirements.txt
         python --version
         pip --version
         pip list
