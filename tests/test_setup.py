@@ -3,7 +3,7 @@ import os
 from pytorch_lightning import Trainer, seed_everything
 from spike.source.model import BasicNet
 from spike.source.data import ESDDataModule
-from spike.source.preprocessing import main
+from spike.source.preprocessing import preprocessing
 from omegaconf import OmegaConf
 
 
@@ -16,7 +16,7 @@ def test_setup():
     conf = OmegaConf.create({"experiment": {"filepath": './data/',}})
     OmegaConf.set_struct(conf, True)
     print(conf)
-    main(conf)
+    preprocessing(conf)
 
     # model and data
     model = BasicNet(batch_size=64)
