@@ -62,11 +62,11 @@ class ESDDataModule(pl.LightningDataModule):
         dataset = EnergyDemandDataset(filepath=self.filepath, n_historical_dates=self.seq_len//96)
         val_size = int(0.20 * len(dataset))
         test_size = int(0.5 * val_size)
+
         # all dates:
         all_dates = deepcopy(dataset.dates_map)
         np.random.shuffle(all_dates)
 
-        # TODO: make this random!
         # split dates:
         test_ds = deepcopy(dataset)
         test_ds.dates_map = all_dates[:test_size]
@@ -94,6 +94,5 @@ class ESDDataModule(pl.LightningDataModule):
                           num_workers=self.num_workers, shuffle=False)
 
     def test_dataloader(self):
-        raise NotImplementedError('Not Implemented.')
         return DataLoader(self.test_ds, batch_size=self.batch_size,
                           num_workers=self.num_workers, shuffle=False)

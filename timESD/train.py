@@ -8,7 +8,6 @@ from timESD.source.utils import set_up_neptune, get_neptune_params, get_default_
 import torch
 import pytorch_lightning as pl
 pl.seed_everything(23)
-print('hi')
 
 
 def train(FLAGS):

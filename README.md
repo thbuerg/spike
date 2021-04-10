@@ -21,9 +21,13 @@ First, install dependencies (before you do that, install Miniconda.)
 # clone timESD   
 git clone https://github.com/thbuerg/timeESD
 
-# install timESD
+# install dependencies
 cd timESD
 conda env create -f environment.yml
+
+# install timESD
+pip install -e .
+
 ```   
  Next, navigate to train.py and execute it.   
  ```bash
