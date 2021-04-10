@@ -13,8 +13,9 @@ def test_setup():
     os.makedirs(filepath, exist_ok=True)
 
     # preprocessing
-    conf = OmegaConf.create({"experiment": {"filepath": './data',}})
+    conf = OmegaConf.create({"experiment": {"filepath": './data/',}})
     OmegaConf.set_struct(conf, True)
+    print(conf)
     main(conf)
 
     # model and data
