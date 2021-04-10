@@ -50,7 +50,7 @@ class ESDDataModule(pl.LightningDataModule):
     """
     DataModule for ESD dataset. Follows simple pl API.
     """
-    def __init__(self, filepath, batch_size, seq_len, num_workers=8, **kwargs):
+    def __init__(self, filepath, batch_size, seq_len=672, num_workers=8, **kwargs):
         super().__init__()
         self.num_workers = num_workers
         self.batch_size = batch_size

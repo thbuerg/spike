@@ -31,6 +31,8 @@ conda env create -f environment.yml
 pip install -e .
 
 ```   
+ If you want to log to neptune, make sure your Neptune.ai API token is exported to the environment
+
  Next, navigate to train.py and execute it.   
  ```bash
 # module folder
