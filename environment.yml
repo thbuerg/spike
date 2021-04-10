@@ -1,4 +1,4 @@
-name: spike
+name: spike_env
 channels:
   - defaults
   - conda-forge
