@@ -1,7 +1,7 @@
 import hydra
 from omegaconf import DictConfig, OmegaConf
 
-from spike.source.model import BasicESD
+from spike.source.model import BasicNet
 from spike.source.data import ESDDataModule
 from spike.source.utils import set_up_neptune, get_neptune_params, get_default_callbacks
 
@@ -18,7 +18,7 @@ def train(FLAGS):
     datamodule = ESDDataModule(**FLAGS.experiment)
     datamodule.prepare_data()
     datamodule.setup("fit")
-    model = BasicESD(**FLAGS.experiment, loss_fn=torch.nn.BCELoss)
+    model = BasicNet(**FLAGS.experiment, loss_fn=torch.nn.BCELoss)
     trainer = pl.Trainer(**FLAGS.trainer)
     lr = trainer.tuner.lr_find(model, datamodule, num_training=500).suggestion()
     if lr > 0.1:
@@ -41,7 +41,7 @@ def train(FLAGS):
     # ------------
     # model
     # ------------
-    model = BasicESD(**FLAGS.experiment, loss_fn=torch.nn.BCELoss)
+    model = BasicNet(**FLAGS.experiment, loss_fn=torch.nn.BCELoss)
 
     # ------------
     # training

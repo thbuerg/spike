@@ -5,7 +5,7 @@ import pytorch_lightning as pl
 from pytorch_lightning.core.decorators import auto_move_data
 
 
-class BasicESD(pl.LightningModule):
+class BasicNet(pl.LightningModule):
     """
     Autoregressive model to predict spikes in enegry demand data.
     """
@@ -25,7 +25,7 @@ class BasicESD(pl.LightningModule):
                  schedule_kwargs={},
                  **kwargs
                  ):
-        super(BasicESD, self).__init__()
+        super(BasicNet, self).__init__()
 
         self.optimizer = optimizer
         self.optimizer_kwargs = optimizer_kwargs
