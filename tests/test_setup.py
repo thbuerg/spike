@@ -15,7 +15,6 @@ def test_setup():
     # preprocessing
     conf = OmegaConf.create({"experiment": {"filepath": './data/',}})
     OmegaConf.set_struct(conf, True)
-    print(conf)
     preprocessing(conf)
 
     # model and data
@@ -26,7 +25,5 @@ def test_setup():
     # run
     trainer.fit(model, datamodule=datamodule)
     results = trainer.test()
-    print(results)
-    raise NotImplementedError()
 
-    assert results[0]['val_acc@5'] > 0.1
+    assert results[0]['test_acc@5'] > 0.1
