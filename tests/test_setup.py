@@ -26,5 +26,7 @@ def test_setup():
     # run
     trainer.fit(model, datamodule=datamodule)
     results = trainer.test()
+    print(results)
+    raise NotImplementedError()
 
     assert results[0]['val_acc@5'] > 0.1
