@@ -3,6 +3,7 @@
 # Time Series Forecasting for Energy Demand Spike Prediction (SPIKE)
 # Your Project Name     
 ![CI testing](https://github.com/thbuerg/spike/workflows/CI%20testing/badge.svg?branch=master&event=push)
+![Python 3.6](https://img.shields.io/badge/Python-3.7%2B-blue)
 
 :battery::battery::electric_plug:
 </div>
